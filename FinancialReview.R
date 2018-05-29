@@ -133,7 +133,7 @@ is.na(fin$Expenses)
 fin[is.na(fin$Expenses),]
 fin[is.na(fin$State),]
 
-#Removing records with missing data
+#Removing records with missing data!!!!
 fin_backup <- fin #create a backup of what we have
 fin <- fin_backup
 
@@ -149,3 +149,83 @@ tail(fin)
 
 rownames(fin) <- NULL #faster way to reindex your dataset
 tail(fin)
+
+
+#Replacing missing data: Factual Analysis
+fin[!complete.cases(fin),]
+
+fin[is.na(fin$State),] #checking missing rows in State column
+fin[is.na(fin$State) & fin$City == "New York",]
+fin[is.na(fin$State) & fin$City == "New York","State"] <- "NY"
+#check if the State has changed:
+fin[c(11,377),]
+
+fin[is.na(fin$State) & fin$City == "San Francisco",]
+fin[is.na(fin$State) & fin$City == "San Francisco","State"] <- "CA"
+fin[c(82,265),]
+
+fin[!complete.cases(fin),]
+
+#Replacing missing data: Median Imputation Method (1)
+fin[!complete.cases(fin),]
+
+median(fin[, "Employees"], na.rm=TRUE) #calculates the median of Employees & ignores NA
+med_empl_retail <- median(fin[fin$Industry=="Retail", "Employees"], na.rm=TRUE) #calculates the median of Employees which are in Retail Industry & na.rm=TRUE
+#Could be used for mean(fin[fin$Industry=="Retail", "Employees"], na.rm=TRUE)
+med_empl_retail
+
+fin[is.na(fin$Employees) & fin$Industry == "Retail",]
+fin[is.na(fin$Employees) & fin$Industry == "Retail", "Employees"] <- med_empl_retail
+#check:
+fin[3,]
+
+fin[!complete.cases(fin),]
+
+median(fin[, "Employees"], na.rm=TRUE)
+med_empl_financial <- median(fin[fin$Industry=="Financial Services", "Employees"], na.rm=TRUE)
+med_empl_financial
+
+fin[is.na(fin$Employees)&fin$Industry=="Financial Services", ]
+fin[is.na(fin$Employees)&fin$Industry=="Financial Services", "Employees"] <- med_empl_financial
+#check:
+fin[330,]
+
+#Replacing missing data: Median Imputation Method (2)
+fin[!complete.cases(fin),]
+med_empl_constr <- median(fin[fin$Industry=="Construction", "Growth"], na.rm=TRUE)
+med_empl_constr
+
+fin[is.na(fin$Growth) & fin$Industry=="Construction",]
+fin[is.na(fin$Growth) & fin$Industry=="Construction","Growth"] <- med_empl_constr
+#check:
+fin[8,]
+
+#Replacing missing data: Median Imputation Method (3)
+fin[!complete.cases(fin),]
+median(fin[,"Revenue"], na.rm=TRUE)
+med_rev_constr <- median(fin[fin$Industry =="Construction","Revenue"], na.rm=TRUE)
+
+fin[is.na(fin$Revenue) & fin$Industry=="Construction","Revenue"] <- med_rev_constr
+#check:
+fin[8,]
+
+fin[!complete.cases(fin),]
+median(fin[,"Expenses"], na.rm=TRUE)
+med_exp_constr <- median(fin[fin$Industry =="Construction","Expenses"], na.rm=TRUE)
+med_exp_constr
+
+fin[is.na(fin$Expenses) & fin$Industry=="Construction" & is.na(fin$Profit),"Expenses"] <- med_exp_constr
+#check:
+fin[8,]
+fin[!complete.cases(fin),]
+
+#Replacing missing data: deriving values
+#Revenue - Expenses = Profit
+fin[is.na(fin$Profit),"Profit"] <- fin[is.na(fin$Profit),"Revenue"] - fin[is.na(fin$Profit),"Expenses"]
+fin[c(8,42),]
+
+fin[!complete.cases(fin),]
+fin[is.na(fin$Expenses),"Expenses"] <-  fin[is.na(fin$Expenses),"Revenue"] - fin[is.na(fin$Expenses),"Profit"]
+fin[15,]
+
+fin[!complete.cases(fin),]
