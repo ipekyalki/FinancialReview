@@ -105,3 +105,47 @@ head(fin, 24)
 complete.cases(fin) #checks if there are any missing values in each row 
 fin[!complete.cases(fin),] #grab the rows with missing values
 #some NA's are placed inside of brackets -> notice that they all belong to a factor variable
+str(fin)
+
+#FILTERING
+
+#Filtering by using which() for non-missing data
+head(fin)
+fin[fin$Revenue == 9746272,] #returns NA values as well
+which(fin$Revenue == 9746272) #which ignores NAs
+fin[which(fin$Revenue == 9746272),] #picks up the entire line
+
+head(fin)
+fin[fin$Employees == 45,]
+fin[which(fin$Employee == 45),] 
+
+#Filtering by using is.na() for non-missing data
+head(fin, 24)
+#----fin$Expenses == NA
+#----fin[fin$Expenses == NA,]
+
+is.na() #checks if something is NA
+
+a <- c(1,24,543,NA,76,45,NA)
+is.na(a)
+
+is.na(fin$Expenses)
+fin[is.na(fin$Expenses),]
+fin[is.na(fin$State),]
+
+#Removing records with missing data
+fin_backup <- fin #create a backup of what we have
+fin <- fin_backup
+
+fin[!complete.cases(fin),]
+fin[is.na(fin$Industry),]
+fin[!is.na(fin$Industry),] #check the opposite if this filtered data really doesn't contain NA's in Industry
+fin <- fin[!is.na(fin$Industry),] #now, overwrite the previous filtered column to the original column which has NAs
+fin
+
+#Resetting the dataframe index
+rownames(fin) <- 1:nrow(fin)
+tail(fin)
+
+rownames(fin) <- NULL #faster way to reindex your dataset
+tail(fin)
