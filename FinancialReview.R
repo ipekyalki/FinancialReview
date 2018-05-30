@@ -229,3 +229,37 @@ fin[is.na(fin$Expenses),"Expenses"] <-  fin[is.na(fin$Expenses),"Revenue"] - fin
 fin[15,]
 
 fin[!complete.cases(fin),]
+
+#Visualize the data
+#A scatterplot classified by industry showing revenue, expenses, profit
+library(ggplot2)
+
+p <- ggplot(data=fin)
+p
+p + geom_point(aes(x=Revenue, y=Expenses,
+                   colour=Industry, size=Profit)) #using geom_point for scatter plot
+
+#A scatterplot classified by industry trends for the expenses
+d <- ggplot(data=fin, aes(x=Revenue, y=Expenses,
+                          colour=Industry))
+d + geom_point() +
+  geom_smooth(fill=NA, size=1.2) #geom_smooth creates the trendlines, by not filling it in we simply create a trendline without any fillings
+
+#Boxplot
+f <- ggplot(data=fin, aes(x=Industry, y=Growth,
+                          colour=Industry))
+f + geom_boxplot()
+            
+#Extra:
+f + geom_jitter() + geom_boxplot(size=1, alpha= 0.5, outlier.colour = NA) #shows data points around and with outlier colour all duplicated outliers are deleted
+
+#Summary:
+#1. Factor Variable Trap: Factors sometimes needs to be converted into numerics, when doing that be careful to not convert the actual factorization value, first convert it to a character then a numeric
+#2. gsub() and sub()
+#3. methods for dealing with missing data
+#4. NA - the 3rd logical constant
+#5. How to locate missing data: complete.cases()
+#6. Filtering: which() & is.na()
+#7. Median Imputation Method
+#8. Factual Analysis & Deriving Values Methods
+
